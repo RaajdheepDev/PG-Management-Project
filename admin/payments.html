@@ -32,18 +32,5 @@ async function logout(){await supabaseClient.auth.signOut();location.replace('lo
 const today=new Date();const todayStr=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');document.getElementById('paidFromDate').value=todayStr;document.getElementById('paidToDate').value=todayStr;
 loadPayments();
 </script><script>
-(function(){
-  const nav=document.querySelector('.nav');
-  if(!nav)return;
-  let link=nav.querySelector('a[href*="payments.html"]');
-  if(!link){
-    link=document.createElement('a');
-    link.href='payments.html?v=20260914';
-    link.innerHTML='💰 Payments';
-    nav.insertBefore(link, nav.children[3]||null);
-  }
-  link.style.display='flex';
-  link.style.visibility='visible';
-  link.style.opacity='1';
-})();
+
 </script></body></html>
