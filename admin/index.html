@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Dashboard | My Home Boys PG</title><style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f7fb;color:#172033}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+.app{display:flex;min-height:100vh}
+.sidebar{width:250px;background:#111827;color:#fff;padding:22px 16px;position:fixed;left:0;top:0;bottom:0;z-index:10}
+.brand{font-size:20px;font-weight:800;padding:10px 12px 26px}
+.brand span{color:#60a5fa}
+.nav{display:grid;gap:7px}
+.nav a{padding:12px 13px;border-radius:10px;color:#cbd5e1;font-size:14px;display:flex;gap:11px;align-items:center}
+.nav a:hover,.nav a.active{background:#1f2937;color:#fff}
+.main{margin-left:250px;flex:1;padding:28px;max-width:1500px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:26px}
+.title h1{margin:0;font-size:28px}.title p{margin:6px 0 0;color:#64748b}
+.user{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:9px 13px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.card{background:#fff;border:1px solid #e7ebf0;border-radius:15px;padding:19px;box-shadow:0 3px 15px rgba(15,23,42,.04)}
+.stat-label{color:#64748b;font-size:13px}.stat{font-size:28px;font-weight:800;margin-top:7px}.muted{color:#64748b;font-size:13px}
+.section{margin-top:20px}.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.section-head h2{font-size:18px;margin:0}
+.btn{border:0;border-radius:9px;padding:10px 14px;background:#2563eb;color:#fff;font-weight:700}.btn.secondary{background:#eef2ff;color:#3730a3}.btn.danger{background:#fee2e2;color:#b91c1c}
+.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:650px}.table th,.table td{padding:13px 12px;border-bottom:1px solid #eef2f6;text-align:left;font-size:13px}.table th{color:#64748b;font-weight:700}
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800}.paid,.resolved{background:#dcfce7;color:#166534}.pending{background:#fef3c7;color:#92400e}.overdue{background:#fee2e2;color:#991b1b}.info{background:#dbeafe;color:#1d4ed8}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}.field{display:grid;gap:6px}.field label{font-size:12px;font-weight:700;color:#475569}.field input,.field select,.field textarea{border:1px solid #dbe2ea;border-radius:9px;padding:10px 11px;background:#fff;outline:none}.field textarea{min-height:110px;resize:vertical}.full{grid-column:1/-1}
+.notice{padding:14px;border:1px solid #e5e7eb;border-radius:11px;background:#fff;margin-bottom:10px}.notice strong{display:block;margin-bottom:5px}.notice small{color:#64748b}
+.mobile-toggle{display:none}
+@media(max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.sidebar{width:0;padding:0;overflow:hidden}.main{margin-left:0;padding:18px}.grid,.form-grid{grid-template-columns:1fr}.topbar{align-items:flex-start}.mobile-toggle{display:block;position:fixed;left:12px;top:12px;z-index:20;border:0;background:#111827;color:#fff;border-radius:8px;padding:9px}.sidebar.open{width:250px;padding:22px 16px}.sidebar.open~.main{margin-left:0}}
+.nav a[href*="payments.html"]{display:flex!important;visibility:visible!important;opacity:1!important}
+</style></head>
+<body><div class="app">
+<aside class="sidebar" id="sidebar"><div class="brand">MY HOME <span>BOYS PG</span></div><nav class="nav"><a class="active" href="index.html?v=20260914">⌂ Dashboard</a><a class="" href="students.html?v=20260914">👥 Residents</a><a class="" href="rooms.html?v=20260914">🛏 Rooms</a><a class="" href="payments.html?v=20260914">💰 Payments</a><a class="" href="complaints.html?v=20260914">⚙ Complaints</a><a class="" href="notices.html?v=20260914">🔔 Notices</a><a class="" href="rules.html?v=20260914">📋 PG Rules</a><a class="" href="settings.html?v=20260914">⚙ Settings</a></nav>
+<div style="position:absolute;bottom:22px;left:16px;right:16px"><a href="../MyHomeBoysPG_with_dashboards.html">← Public Website</a></div></aside>
+<button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+<main class="main"><div class="topbar"><div class="title"><h1>Admin Dashboard</h1><p>My Home Boys PG management portal</p></div><div class="user">Admin</div><button class="btn secondary" style="margin-left:8px" onclick="logout()">Logout</button></div>
+<div class="grid">
+<div class="card"><div class="stat-label">Total Residents</div><div class="stat" id="totalResidents">—</div><div class="muted">Active residents</div></div>
+<div class="card"><div class="stat-label">Occupied Beds</div><div class="stat" id="occupiedBeds">—</div><div class="muted" id="bedsAvailable">— beds available</div></div>
+<div class="card"><div class="stat-label">Rent Collected</div><div class="stat" id="rentCollected">—</div><div class="muted" id="rentMonth">Current month</div></div>
+<div class="card"><div class="stat-label">Pending Rent</div><div class="stat" id="pendingRent">—</div><div class="muted">Needs follow-up</div></div>
+</div>
+<div class="section grid">
+<div class="card"><h3>Pending Complaints</h3><div class="stat" id="pendingComplaints">—</div><button class="btn secondary" onclick="location.href='complaints.html'">Manage</button></div>
+<div class="card"><h3>Available Beds</h3><div class="stat" id="availableBeds">—</div><button class="btn secondary" onclick="location.href='rooms.html'">View Rooms</button></div>
+<div class="card"><h3>Number of Residents</h3><div class="stat" id="residentCount">—</div><div class="muted">Active residents</div><button class="btn secondary" onclick="location.href='students.html'">View Residents</button></div>
+<div class="card"><h3>Notices</h3><div class="stat" id="activeNotices">—</div><button class="btn secondary" onclick="location.href='notices.html'">Manage</button></div>
+</div>
+<div class="section card"><h2>Recent Activity</h2><div class="table-wrap"><table class="table"><thead><tr><th>Activity</th><th>Resident</th><th>Date</th><th>Status</th></tr></thead><tbody id="recentActivity"><tr><td colspan="4" class="muted">Loading activity...</td></tr></tbody></table></div></div>
+</main></div>
+<script>
+document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',()=>document.getElementById('sidebar').classList.remove('open')));
+</script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://lfbzmllqmqcnerqkqroa.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_-hgZczEPq-EZ53N4cbXSXA_Y__0s8Wu";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+</script><script>
+async function loadDashboard(){
+  const set=(id,value)=>{const e=document.getElementById(id);if(e)e.textContent=value};
+  const fmtMoney=(n)=>'₹'+Number(n||0).toLocaleString('en-IN',{maximumFractionDigits:0});
+  const fmtShortMoney=(n)=>{
+    n=Number(n||0);
+    if(n>=10000000)return '₹'+(n/10000000).toFixed(2)+'Cr';
+    if(n>=100000)return '₹'+(n/100000).toFixed(2)+'L';
+    if(n>=1000)return '₹'+(n/1000).toFixed(1)+'K';
+    return '₹'+Math.round(n).toLocaleString('en-IN');
+  };
+  const dateValue=(r)=>{
+    for(const k of ['payment_date','paid_at','due_date','created_at','date','transaction_date']){
+      if(r && r[k]) return r[k];
+    }
+    return null;
+  };
+  const residentName=(r,map)=>r?.full_name || map.get(r?.student_id) || map.get(r?.resident_id) || 'Unknown Resident';
+
+  const results=await Promise.all([
+    supabaseClient.from('profiles').select('*').eq('role','resident'),
+    supabaseClient.from('rooms').select('*'),
+    supabaseClient.from('beds').select('*'),
+    supabaseClient.from('payments').select('*'),
+    supabaseClient.from('complaints').select('*'),
+    supabaseClient.from('notices').select('*')
+  ]);
+
+  const [profilesRes,roomsRes,bedsRes,paymentsRes,complaintsRes,noticesRes]=results;
+  const errors=[profilesRes,roomsRes,bedsRes,paymentsRes,complaintsRes,noticesRes].filter(x=>x.error);
+  if(errors.length){
+    console.error('Dashboard data errors:',errors.map(x=>x.error));
+  }
+
+  const profiles=profilesRes.data||[];
+  const rooms=roomsRes.data||[];
+  const beds=bedsRes.data||[];
+  const payments=paymentsRes.data||[];
+  const complaints=complaintsRes.data||[];
+  const notices=noticesRes.data||[];
+
+  const activeResidents=profiles.filter(r=>(r.resident_status||'active')==='active');
+  const occupiedBeds=beds.filter(b=>b.student_id!=null);
+  const availableBeds=Math.max(0,beds.length-occupiedBeds.length);
+
+  set('totalResidents',activeResidents.length);
+  set('occupiedBeds',occupiedBeds.length+' / '+beds.length);
+  set('bedsAvailable',availableBeds+' beds available');
+  set('availableBeds',availableBeds);
+
+  const now=new Date();
+  const year=now.getFullYear(), month=now.getMonth();
+  const monthName=now.toLocaleString('en-IN',{month:'long',year:'numeric'});
+
+  const isInCurrentMonth=(value)=>{
+    if(!value)return false;
+    const d=new Date(value);
+    return !isNaN(d) && d.getFullYear()===year && d.getMonth()===month;
+  };
+  const statusOf=(r)=>String(r?.status||'').toLowerCase().replace(/\s+/g,'_');
+  const amountOf=(r)=>{
+    for(const k of ['amount','paid_amount','rent_amount','total_amount']){
+      if(r && r[k]!=null && !isNaN(Number(r[k]))) return Number(r[k]);
+    }
+    return 0;
+  };
+
+  const paidThisMonth=payments.filter(p=>statusOf(p)==='paid' && isInCurrentMonth(dateValue(p)));
+  const pendingThisMonth=payments.filter(p=>{
+    const s=statusOf(p);
+    return ['pending','unpaid','due','overdue'].includes(s) && (isInCurrentMonth(p.due_date)||isInCurrentMonth(dateValue(p)));
+  });
+  const collected=paidThisMonth.reduce((sum,p)=>sum+amountOf(p),0);
+  const pendingAmount=pendingThisMonth.reduce((sum,p)=>sum+amountOf(p),0);
+
+  set('rentCollected',fmtShortMoney(collected));
+  set('rentMonth',monthName);
+  set('pendingRent',fmtShortMoney(pendingAmount));
+
+  const pendingComplaints=complaints.filter(c=>statusOf(c)==='pending').length;
+  set('pendingComplaints',pendingComplaints);
+
+  const activeNotices=notices.filter(n=>{
+    if(n.is_active===false || n.active===false) return false;
+    if(n.status && ['inactive','archived','deleted'].includes(statusOf(n))) return false;
+    return true;
+  }).length;
+  set('activeNotices',activeNotices);
+
+  const thirtyDaysAgo=new Date(Date.now()-30*24*60*60*1000);
+  const newResidents=profiles.filter(r=>{
+    const d=new Date(r.created_at||r.join_date||r.check_in_date||0);
+    return !isNaN(d) && d>=thirtyDaysAgo;
+  }).length;
+  set('residentCount',activeResidents.length);
+
+  const nameMap=new Map(profiles.map(r=>[r.id,r.full_name||'Unknown Resident']));
+  const activities=[];
+
+  paidThisMonth.forEach(p=>activities.push({
+    date:dateValue(p), activity:'Rent payment received', resident:residentName(p,nameMap),
+    status:'Success', cls:'paid'
+  }));
+  complaints.forEach(c=>activities.push({
+    date:c.created_at, activity:'Complaint submitted', resident:residentName(c,nameMap),
+    status:statusOf(c)==='resolved'?'Resolved':statusOf(c)==='in_progress'?'In Progress':'Pending',
+    cls:statusOf(c)==='resolved'?'paid':statusOf(c)==='in_progress'?'info':'pending'
+  }));
+  profiles.forEach(r=>activities.push({
+    date:r.created_at||r.join_date||r.check_in_date, activity:'Resident registered',
+    resident:r.full_name||'Unknown Resident', status:'New', cls:'info'
+  }));
+
+  activities.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+  const recent=activities.slice(0,5);
+  const tbody=document.getElementById('recentActivity');
+  if(tbody){
+    tbody.innerHTML=recent.length ? recent.map(a=>{
+      const d=a.date?new Date(a.date):null;
+      const dateText=d&&!isNaN(d)?d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'}):'—';
+      return `<tr><td>${escapeHtml(a.activity)}</td><td>${escapeHtml(a.resident)}</td><td>${dateText}</td><td><span class="badge ${a.cls}">${escapeHtml(a.status)}</span></td></tr>`;
+    }).join('') : '<tr><td colspan="4" class="muted">No recent activity.</td></tr>';
+  }
+}
+
+function escapeHtml(v){
+  return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+async function logout(){await supabaseClient.auth.signOut();location.replace('login.html')}
+
+(async()=>{
+  const {data:{session}}=await supabaseClient.auth.getSession();
+  if(!session){location.replace("login.html");return;}
+  const {data:profile,error}=await supabaseClient.from("profiles").select("full_name,role").eq("id",session.user.id).single();
+  if(error||!profile||profile.role!=="admin"){await supabaseClient.auth.signOut();location.replace("login.html");return;}
+  const u=document.querySelector(".user");if(u)u.textContent=profile.full_name||session.user.email;
+  await loadDashboard();
+})();
+</script><script>
+(function(){
+  const nav=document.querySelector('.nav');
+  if(!nav)return;
+  let link=nav.querySelector('a[href*="payments.html"]');
+  if(!link){
+    link=document.createElement('a');
+    link.href='payments.html?v=20260914';
+    link.innerHTML='💰 Payments';
+    nav.insertBefore(link, nav.children[3]||null);
+  }
+  link.style.display='flex';
+  link.style.visibility='visible';
+  link.style.opacity='1';
+})();
+</script></body></html>

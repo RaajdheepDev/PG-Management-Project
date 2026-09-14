@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Room | My Home Boys PG</title><style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f7fb;color:#172033}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+.app{display:flex;min-height:100vh}
+.sidebar{width:250px;background:#111827;color:#fff;padding:22px 16px;position:fixed;left:0;top:0;bottom:0;z-index:10}
+.brand{font-size:20px;font-weight:800;padding:10px 12px 26px}
+.brand span{color:#60a5fa}
+.nav{display:grid;gap:7px}
+.nav a{padding:12px 13px;border-radius:10px;color:#cbd5e1;font-size:14px;display:flex;gap:11px;align-items:center}
+.nav a:hover,.nav a.active{background:#1f2937;color:#fff}
+.main{margin-left:250px;flex:1;padding:28px;max-width:1500px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:26px}
+.title h1{margin:0;font-size:28px}.title p{margin:6px 0 0;color:#64748b}
+.user{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:9px 13px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.card{background:#fff;border:1px solid #e7ebf0;border-radius:15px;padding:19px;box-shadow:0 3px 15px rgba(15,23,42,.04)}
+.stat-label{color:#64748b;font-size:13px}.stat{font-size:28px;font-weight:800;margin-top:7px}.muted{color:#64748b;font-size:13px}
+.section{margin-top:20px}.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.section-head h2{font-size:18px;margin:0}
+.btn{border:0;border-radius:9px;padding:10px 14px;background:#2563eb;color:#fff;font-weight:700}.btn.secondary{background:#eef2ff;color:#3730a3}.btn.danger{background:#fee2e2;color:#b91c1c}
+.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:650px}.table th,.table td{padding:13px 12px;border-bottom:1px solid #eef2f6;text-align:left;font-size:13px}.table th{color:#64748b;font-weight:700}
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800}.paid,.resolved{background:#dcfce7;color:#166534}.pending{background:#fef3c7;color:#92400e}.overdue{background:#fee2e2;color:#991b1b}.info{background:#dbeafe;color:#1d4ed8}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}.field{display:grid;gap:6px}.field label{font-size:12px;font-weight:700;color:#475569}.field input,.field select,.field textarea{border:1px solid #dbe2ea;border-radius:9px;padding:10px 11px;background:#fff;outline:none}.field textarea{min-height:110px;resize:vertical}.full{grid-column:1/-1}
+.notice{padding:14px;border:1px solid #e5e7eb;border-radius:11px;background:#fff;margin-bottom:10px}.notice strong{display:block;margin-bottom:5px}.notice small{color:#64748b}
+.mobile-toggle{display:none}
+@media(max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.sidebar{width:0;padding:0;overflow:hidden}.main{margin-left:0;padding:18px}.grid,.form-grid{grid-template-columns:1fr}.topbar{align-items:flex-start}.mobile-toggle{display:block;position:fixed;left:12px;top:12px;z-index:20;border:0;background:#111827;color:#fff;border-radius:8px;padding:9px}.sidebar.open{width:250px;padding:22px 16px}.sidebar.open~.main{margin-left:0}}
+</style></head>
+<body><div class="app">
+<aside class="sidebar" id="sidebar"><div class="brand">MY HOME <span>BOYS PG</span></div><nav class="nav"><a class="active" href="index.html">⌂ Dashboard</a><a class="" href="profile.html">👤 My Profile</a><a class="" href="room.html">🛏 My Room</a><a class="" href="complaints.html">⚙ Complaints</a><a class="" href="notices.html">🔔 Notices</a><a class="" href="rules.html">📋 PG Rules</a></nav>
+<div style="position:absolute;bottom:22px;left:16px;right:16px"><a href="../MyHomeBoysPG_with_dashboards.html">← Public Website</a></div></aside>
+<button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+<main class="main">
+  <div class="topbar">
+    <div>
+      <h1>My Room</h1>
+      <p>View your current room and roommate details.</p>
+    </div>
+  </div>
+
+  <div id="roomMessage" style="display:none;margin:16px 0;padding:12px 14px;border-radius:10px;font-size:13px;font-weight:700"></div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="section-head"><h2>Room Details</h2></div>
+      <div class="detail-list">
+        <div class="detail-row"><span>Room Number</span><strong id="roomNumber">Loading...</strong></div>
+        <div class="detail-row"><span>Room Type</span><strong id="roomType">Loading...</strong></div>
+        <div class="detail-row"><span>Capacity</span><strong id="capacity">Loading...</strong></div>
+        <div class="detail-row"><span>Your Bed</span><strong id="bedNumber">Loading...</strong></div>
+        <div class="detail-row"><span>Bed Status</span><strong id="bedStatus">Loading...</strong></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-head"><h2>Roommates</h2></div>
+      <div id="roommates">Loading...</div>
+    </div>
+  </div>
+</main></div>
+<script>
+document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',()=>document.getElementById('sidebar').classList.remove('open')));
+</script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://lfbzmllqmqcnerqkqroa.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_-hgZczEPq-EZ53N4cbXSXA_Y__0s8Wu";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+</script><script>
+function showMessage(text) {
+  const el = document.getElementById("roomMessage");
+  if (!el) return;
+  el.textContent = text;
+  el.style.display = "block";
+  el.style.background = "#fee2e2";
+  el.style.color = "#991b1b";
+}
+
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value ?? "—";
+}
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, ch => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[ch]));
+}
+
+async function loadRoom() {
+  const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+
+  if (sessionError || !session) {
+    location.replace("login.html");
+    return;
+  }
+
+  const { data: profile, error: profileError } = await supabaseClient
+    .from("profiles")
+    .select("id, full_name, room_id, bed_number, role")
+    .eq("id", session.user.id)
+    .single();
+
+  if (profileError || !profile || profile.role !== "resident") {
+    await supabaseClient.auth.signOut();
+    location.replace("login.html");
+    return;
+  }
+
+  if (!profile.room_id) {
+    setText("roomNumber", "Not assigned");
+    setText("roomType", "—");
+    setText("capacity", "—");
+    setText("bedNumber", profile.bed_number ? "Bed " + profile.bed_number : "Not assigned");
+    setText("bedStatus", "—");
+    document.getElementById("roommates").innerHTML =
+      '<p style="color:#64748b">You have not been assigned to a room yet.</p>';
+    return;
+  }
+
+  const { data: room, error: roomError } = await supabaseClient
+    .from("rooms")
+    .select("id, room_number, room_type, capacity, status")
+    .eq("id", profile.room_id)
+    .single();
+
+  if (roomError || !room) {
+    showMessage("Could not load your room details: " + (roomError?.message || "Room not found"));
+    return;
+  }
+
+  setText("roomNumber", room.room_number);
+  setText("roomType", room.room_type);
+  setText("capacity", room.capacity);
+  setText("bedNumber", profile.bed_number ? "Bed " + profile.bed_number : "Not assigned");
+
+  const { data: myBed } = await supabaseClient
+    .from("beds")
+    .select("bed_number, status")
+    .eq("room_id", room.id)
+    .eq("student_id", session.user.id)
+    .maybeSingle();
+
+  setText("bedStatus", myBed?.status || "Not assigned");
+
+  const { data: beds, error: bedsError } = await supabaseClient
+    .from("beds")
+    .select("bed_number, student_id, status")
+    .eq("room_id", room.id)
+    .order("bed_number", { ascending: true });
+
+  if (bedsError) {
+    showMessage("Room loaded, but roommates could not be loaded: " + bedsError.message);
+    return;
+  }
+
+  // Residents should not be able to read other residents' full profiles directly.
+  // Use the secure RPC to return only the roommate details needed on this page.
+  const { data: roommates, error: roommateError } = await supabaseClient
+    .rpc("get_my_roommates");
+
+  const container = document.getElementById("roommates");
+  if (roommateError) {
+    showMessage("Room loaded, but roommate details could not be loaded: " + roommateError.message);
+    return;
+  }
+
+  if (!roommates || !roommates.length) {
+    container.innerHTML = '<p style="color:#64748b">No other roommates are currently assigned.</p>';
+    return;
+  }
+
+  container.innerHTML = roommates.map(r => {
+    const checkIn = r.check_in_date
+      ? new Date(r.check_in_date + "T00:00:00").toLocaleDateString("en-IN", {
+          day: "2-digit", month: "short", year: "numeric"
+        })
+      : "Not set";
+
+    return `<div class="roommate-row" style="padding:16px 0;border-bottom:1px solid #e5e7eb">
+      <div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start">
+        <div>
+          <strong style="font-size:16px">${escapeHtml(r.full_name || "Resident")}</strong>
+          <div style="font-size:13px;color:#64748b;margin-top:4px">
+            ${escapeHtml(r.resident_type || "Resident")}
+          </div>
+        </div>
+        <span style="font-size:12px;color:#64748b">
+          ${escapeHtml(r.bed_status || "occupied")}
+        </span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;margin-top:12px;font-size:13px;color:#475569">
+        <div><strong>Bed:</strong> ${escapeHtml(r.bed_number ? "Bed " + r.bed_number : "Not assigned")}</div>
+        <div><strong>Phone:</strong> ${escapeHtml(r.phone || "Not provided")}</div>
+        <div><strong>Check-in:</strong> ${escapeHtml(checkIn)}</div>
+        <div><strong>Room:</strong> ${escapeHtml(room.room_number)}</div>
+      </div>
+    </div>`;
+  }).join("");
+
+}
+
+document.querySelectorAll(".nav a").forEach(a =>
+  a.addEventListener("click", () => document.getElementById("sidebar")?.classList.remove("open"))
+);
+
+loadRoom().catch(err => {
+  console.error(err);
+  showMessage("Unable to load your room details.");
+});
+
+async function logout() {
+  await supabaseClient.auth.signOut();
+  location.replace("login.html");
+}
+</script></body></html>

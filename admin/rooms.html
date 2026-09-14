@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rooms | My Home Boys PG</title><style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f7fb;color:#172033}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+.app{display:flex;min-height:100vh}
+.sidebar{width:250px;background:#111827;color:#fff;padding:22px 16px;position:fixed;left:0;top:0;bottom:0;z-index:10}
+.brand{font-size:20px;font-weight:800;padding:10px 12px 26px}
+.brand span{color:#60a5fa}
+.nav{display:grid;gap:7px}
+.nav a{padding:12px 13px;border-radius:10px;color:#cbd5e1;font-size:14px;display:flex;gap:11px;align-items:center}
+.nav a:hover,.nav a.active{background:#1f2937;color:#fff}
+.main{margin-left:250px;flex:1;padding:28px;max-width:1500px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:26px}
+.title h1{margin:0;font-size:28px}.title p{margin:6px 0 0;color:#64748b}
+.user{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:9px 13px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.card{background:#fff;border:1px solid #e7ebf0;border-radius:15px;padding:19px;box-shadow:0 3px 15px rgba(15,23,42,.04)}
+.stat-label{color:#64748b;font-size:13px}.stat{font-size:28px;font-weight:800;margin-top:7px}.muted{color:#64748b;font-size:13px}
+.section{margin-top:20px}.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.section-head h2{font-size:18px;margin:0}
+.btn{border:0;border-radius:9px;padding:10px 14px;background:#2563eb;color:#fff;font-weight:700}.btn.secondary{background:#eef2ff;color:#3730a3}.btn.danger{background:#fee2e2;color:#b91c1c}
+.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:650px}.table th,.table td{padding:13px 12px;border-bottom:1px solid #eef2f6;text-align:left;font-size:13px}.table th{color:#64748b;font-weight:700}
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800}.paid,.resolved{background:#dcfce7;color:#166534}.pending{background:#fef3c7;color:#92400e}.overdue{background:#fee2e2;color:#991b1b}.info{background:#dbeafe;color:#1d4ed8}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}.field{display:grid;gap:6px}.field label{font-size:12px;font-weight:700;color:#475569}.field input,.field select,.field textarea{border:1px solid #dbe2ea;border-radius:9px;padding:10px 11px;background:#fff;outline:none}.field textarea{min-height:110px;resize:vertical}.full{grid-column:1/-1}
+.notice{padding:14px;border:1px solid #e5e7eb;border-radius:11px;background:#fff;margin-bottom:10px}.notice strong{display:block;margin-bottom:5px}.notice small{color:#64748b}
+.mobile-toggle{display:none}
+@media(max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.sidebar{width:0;padding:0;overflow:hidden}.main{margin-left:0;padding:18px}.grid,.form-grid{grid-template-columns:1fr}.topbar{align-items:flex-start}.mobile-toggle{display:block;position:fixed;left:12px;top:12px;z-index:20;border:0;background:#111827;color:#fff;border-radius:8px;padding:9px}.sidebar.open{width:250px;padding:22px 16px}.sidebar.open~.main{margin-left:0}}
+
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
+.modal.show{display:flex}.modal-card{width:min(560px,100%);background:#fff;border-radius:16px;padding:22px;box-shadow:0 20px 60px rgba(15,23,42,.2)}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.modal-head h2{margin:0;font-size:20px}
+.close{border:0;background:#f1f5f9;border-radius:8px;font-size:22px;width:36px;height:36px}.actions{display:flex;gap:8px;flex-wrap:wrap}
+.nav a[href*="payments.html"]{display:flex!important;visibility:visible!important;opacity:1!important}
+</style></head>
+<body><div class="app">
+<aside class="sidebar" id="sidebar"><div class="brand">MY HOME <span>BOYS PG</span></div><nav class="nav"><a class="" href="index.html?v=20260914">⌂ Dashboard</a><a class="" href="students.html?v=20260914">👥 Residents</a><a class="active" href="rooms.html?v=20260914">🛏 Rooms</a><a class="" href="payments.html?v=20260914">💰 Payments</a><a class="" href="complaints.html?v=20260914">⚙ Complaints</a><a class="" href="notices.html?v=20260914">🔔 Notices</a><a class="" href="rules.html?v=20260914">📋 PG Rules</a><a class="" href="settings.html?v=20260914">⚙ Settings</a></nav>
+<div style="position:absolute;bottom:22px;left:16px;right:16px"><a href="../MyHomeBoysPG_with_dashboards.html">← Public Website</a></div></aside>
+<button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+<main class="main"><div class="topbar"><div class="title"><h1>Rooms</h1><p>My Home Boys PG management portal</p></div><div class="user">Admin</div><button class="btn secondary" style="margin-left:8px" onclick="logout()">Logout</button></div>
+<div class="grid" style="grid-template-columns:repeat(3,1fr)">
+<div class="card"><div class="stat-label">Total Rooms</div><div class="stat" id="totalRooms">—</div></div>
+<div class="card"><div class="stat-label">Occupied</div><div class="stat" id="occupiedBeds">—</div></div>
+<div class="card"><div class="stat-label">Available Beds</div><div class="stat" id="availableBeds">—</div></div>
+</div>
+<div id="roomsMessage" class="notice" style="display:none;margin-top:20px"></div>
+<div class="section card"><div class="section-head"><h2>Rooms</h2><button class="btn" onclick="openRoomModal()">+ Add Room</button></div><div class="table-wrap"><table class="table">
+<thead><tr><th>Room</th><th>Type</th><th>Monthly Fee</th><th>Capacity</th><th>Occupied</th><th>Available</th><th>Status</th><th>Action</th></tr></thead>
+<tbody id="roomsTableBody"><tr><td colspan="8" class="muted">Loading rooms…</td></tr></tbody>
+</table></div></div>
+</main></div>
+<div class="modal" id="roomModal"><div class="modal-card">
+<div class="modal-head"><h2 id="roomModalTitle">Add Room</h2><button class="close" onclick="closeRoomModal()">×</button></div>
+<form id="roomForm"><input type="hidden" id="roomId"><div class="form-grid">
+<div class="field"><label>Room Number *</label><input id="roomNumber" required placeholder="e.g. 102"></div>
+<div class="field"><label>Room Type *</label><select id="roomType" required><option value="">Select room type</option><option>1 Sharing</option><option>2 Sharing</option><option>3 Sharing</option></select></div>
+<div class="field"><label>Capacity</label><input id="roomCapacity" type="number" readonly placeholder="Auto"></div>
+<div class="field"><label>Monthly Fee</label><input id="roomFee" type="text" readonly placeholder="Auto"></div>
+</div><div class="actions" style="justify-content:flex-end;margin-top:18px">
+<button type="button" class="btn secondary" onclick="closeRoomModal()">Cancel</button><button class="btn" id="saveRoom">Create Room</button>
+</div></form></div></div>
+<script>
+document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',()=>document.getElementById('sidebar').classList.remove('open')));
+</script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://lfbzmllqmqcnerqkqroa.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_-hgZczEPq-EZ53N4cbXSXA_Y__0s8Wu";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+
+function showRoomsMessage(message){
+  const el=document.getElementById("roomsMessage");
+  if(el){el.textContent=message;el.style.display="block";}
+}
+function setStat(id,value){
+  const el=document.getElementById(id);
+  if(el)el.textContent=String(value);
+}
+function escapeHtml(value){
+  return String(value ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+async function loadRooms(){
+  const body=document.getElementById("roomsTableBody");
+  try{
+    const {data:rooms,error:roomsError}=await supabaseClient.from("rooms")
+      .select("id,room_number,room_type,capacity,status").order("room_number",{ascending:true});
+    if(roomsError) throw roomsError;
+
+    const {data:beds,error:bedsError}=await supabaseClient.from("beds")
+      .select("id,room_id,bed_number,student_id");
+    if(bedsError) throw bedsError;
+
+    const allRooms=rooms||[], allBeds=beds||[]; roomsCache=allRooms; bedsCache=allBeds;
+    let occupiedTotal=0, availableTotal=0;
+
+    allRooms.forEach(room=>{
+      const rb=allBeds.filter(b=>b.room_id===room.id);
+      const occupied=rb.filter(b=>b.student_id!==null).length;
+      occupiedTotal+=occupied;
+      availableTotal+=Math.max(Number(room.capacity||0)-occupied,0);
+    });
+
+    setStat("totalRooms",allRooms.length);
+    setStat("occupiedBeds",occupiedTotal);
+    setStat("availableBeds",availableTotal);
+
+    if(!allRooms.length){
+      body.innerHTML='<tr><td colspan="7" class="muted">No rooms found.</td></tr>';
+      return;
+    }
+
+    body.innerHTML=allRooms.map(room=>{
+      const rb=allBeds.filter(b=>b.room_id===room.id);
+      const occupied=rb.filter(b=>b.student_id!==null).length;
+      const capacity=Number(room.capacity||0);
+      const available=Math.max(capacity-occupied,0);
+      const raw=String(room.status||"active").toLowerCase();
+      let label,cls;
+      if(available===0){label="Full";cls="paid";}
+      else{label="Available";cls="info";}
+      const fee=room.room_type==="1 Sharing"?10000:room.room_type==="2 Sharing"?9000:room.room_type==="3 Sharing"?8000:0; return `<tr><td>${escapeHtml(room.room_number)}</td><td>${escapeHtml(room.room_type)}</td><td>₹${Number(fee).toLocaleString("en-IN")}</td><td>${capacity}</td><td>${occupied}</td><td>${available}</td><td><span class="badge ${cls}">${label}</span></td><td><div class="actions"><button class="btn secondary" onclick="openEditRoomModal('${room.id}')">Edit</button><button class="btn danger" onclick="toggleRoomStatus('${room.id}','${raw}')">${raw==="active"?"Deactivate":"Activate"}</button></div></td></tr>`;
+    }).join("");
+  }catch(error){
+    console.error("Rooms load failed:",error);
+    ["totalRooms","occupiedBeds","availableBeds"].forEach(id=>setStat(id,"—"));
+    body.innerHTML='<tr><td colspan="7" class="muted">Unable to load rooms.</td></tr>';
+    showRoomsMessage("Unable to load room data. Please refresh and try again.");
+  }
+}
+
+(async()=>{
+  const {data:{session}}=await supabaseClient.auth.getSession();
+  if(!session){location.replace("login.html");return;}
+  const {data:profile,error}=await supabaseClient.from("profiles").select("full_name,role").eq("id",session.user.id).single();
+  if(error||!profile||profile.role!=="admin"){await supabaseClient.auth.signOut();location.replace("login.html");return;}
+  const u=document.querySelector(".user");
+  if(u)u.textContent=profile.full_name||session.user.email;
+  await loadRooms();
+})();
+
+let roomsCache=[];
+let bedsCache=[];
+
+function hideRoomsMessage(){
+  const el=document.getElementById("roomsMessage");
+  if(el){el.textContent="";el.style.display="none";}
+}
+
+function openRoomModal(room=null){
+  hideRoomsMessage();
+  document.getElementById("roomModal").classList.add("show");
+  document.getElementById("roomId").value=room?.id||"";
+  document.getElementById("roomNumber").value=room?.room_number||"";
+  document.getElementById("roomType").value=room?.room_type||"";
+  updateRoomFee();
+  document.getElementById("roomCapacity").value=room?.capacity??"";
+  document.getElementById("roomModalTitle").textContent=room?"Edit Room":"Add Room";
+  document.getElementById("saveRoom").textContent=room?"Save Changes":"Create Room"; syncRoomCapacity();
+}
+function closeRoomModal(){document.getElementById("roomModal").classList.remove("show");}
+function openEditRoomModal(id){const room=roomsCache.find(r=>r.id===id);if(room)openRoomModal(room);}
+function roomFeeForType(type){ return type==="1 Sharing"?10000:type==="2 Sharing"?9000:type==="3 Sharing"?8000:0; }
+function syncRoomCapacity(){
+  const type=document.getElementById("roomType").value;
+  const match=type.match(/^(\d+)\s+Sharing$/i);
+  document.getElementById("roomCapacity").value=match?Number(match[1]):"";
+  const fee=roomFeeForType(type);
+  const feeEl=document.getElementById("roomFee");
+  if(feeEl) feeEl.value=fee?`₹${fee.toLocaleString("en-IN")}`:"";
+}
+document.getElementById("roomType").addEventListener("change",syncRoomCapacity);
+
+
+async function createBedsForRoom(roomId,capacity){
+  const existing=bedsCache.filter(b=>b.room_id===roomId);
+  const numbers=new Set(existing.map(b=>Number(b.bed_number)));
+  const rows=[];
+  for(let n=1;n<=capacity;n++) if(!numbers.has(n)) rows.push({room_id:roomId,bed_number:n,student_id:null});
+  if(rows.length){
+    const {error}=await supabaseClient.from("beds").insert(rows);
+    if(error) throw error;
+  }
+}
+async function removeExtraBedsSafely(roomId,newCapacity){
+  const roomBeds=bedsCache.filter(b=>b.room_id===roomId);
+  const occupied=roomBeds.filter(b=>b.student_id!==null && Number(b.bed_number)>newCapacity);
+  if(occupied.length) throw new Error("Cannot reduce capacity because a resident occupies a bed that would be removed.");
+  const ids=roomBeds.filter(b=>Number(b.bed_number)>newCapacity).map(b=>b.id);
+  if(ids.length){
+    const {error}=await supabaseClient.from("beds").delete().in("id",ids);
+    if(error) throw error;
+  }
+}
+document.getElementById("roomForm").addEventListener("submit",async e=>{
+  e.preventDefault(); hideRoomsMessage();
+  const id=document.getElementById("roomId").value.trim();
+  const roomNumber=document.getElementById("roomNumber").value.trim();
+  const roomType=document.getElementById("roomType").value;
+  const match=roomType.match(/^(\d+)\s+Sharing$/i); const capacity=match?Number(match[1]):0;
+  if(!roomNumber||!roomType||!Number.isInteger(capacity)||capacity<1){
+    showRoomsMessage("Please enter a valid room number, room type and capacity."); return;
+  }
+  const duplicate=roomsCache.find(r=>String(r.room_number).trim().toLowerCase()===roomNumber.toLowerCase() && r.id!==id);
+  if(duplicate){
+    showRoomsMessage(`Room ${roomNumber} already exists. Please enter a different room number.`);
+    closeRoomModal();
+      return;
+  }
+
+  const button=document.getElementById("saveRoom");
+  button.disabled=true; button.textContent=id?"Saving...":"Creating...";
+  try{
+    if(!id){
+      const {data:room,error}=await supabaseClient.from("rooms")
+        .insert({room_number:roomNumber,room_type:roomType,capacity:capacity,status:"active"})
+        .select("id,room_number,room_type,capacity,status").single();
+      if(error) throw error;
+      await createBedsForRoom(room.id,capacity);
+      closeRoomModal(); await loadRooms();
+      showRoomsMessage(`Room ${roomNumber} created successfully with ${capacity} beds.`);
+    }else{
+      const old=roomsCache.find(r=>r.id===id); if(!old) throw new Error("Room not found.");
+      if(capacity<Number(old.capacity)) await removeExtraBedsSafely(id,capacity);
+      const {error}=await supabaseClient.from("rooms").update({room_number:roomNumber,room_type:roomType,capacity}).eq("id",id);
+      if(error) throw error;
+      if(capacity>Number(old.capacity)) await createBedsForRoom(id,capacity);
+      closeRoomModal(); await loadRooms();
+      showRoomsMessage(`Room ${roomNumber} updated successfully.`);
+    }
+  }catch(error){
+    console.error("Room save failed:",error);
+    if(error?.code==="23505" || String(error?.message||"").toLowerCase().includes("room_number")){
+      showRoomsMessage(`Room ${roomNumber} already exists. Please enter a different room number.`);
+    }else if(error?.code==="42501"){
+      showRoomsMessage("You do not have permission to manage rooms. Please make sure you are logged in as an administrator.");
+    }else{
+      showRoomsMessage(error.message||"Unable to save the room. Please try again.");
+    }
+  }finally{
+    button.disabled=false; button.textContent=id?"Save Changes":"Create Room";
+  }
+});
+async function toggleRoomStatus(id,currentStatus){
+  const room=roomsCache.find(r=>r.id===id); if(!room)return;
+  const next=currentStatus==="active"?"inactive":"active";
+  if(next==="inactive"){
+    const occupied=bedsCache.filter(b=>b.room_id===id&&b.student_id!==null).length;
+    if(occupied>0){
+      showRoomsMessage(`Room ${room.room_number} cannot be deactivated while ${occupied} resident(s) are assigned.`); closeRoomModal();
+      return;
+    }
+  }
+  if(!confirm(`${next==="active"?"Activate":"Deactivate"} Room ${room.room_number}?`))return;
+  const {error}=await supabaseClient.from("rooms").update({status:next}).eq("id",id);
+  if(error){showRoomsMessage(error.message||"Unable to change room status.");return;}
+  await loadRooms(); showRoomsMessage(`Room ${room.room_number} is now ${next}.`);
+}
+
+async function logout(){await supabaseClient.auth.signOut();location.replace("login.html");}
+</script><script>
+(function(){
+  const nav=document.querySelector('.nav');
+  if(!nav)return;
+  let link=nav.querySelector('a[href*="payments.html"]');
+  if(!link){
+    link=document.createElement('a');
+    link.href='payments.html?v=20260914';
+    link.innerHTML='💰 Payments';
+    nav.insertBefore(link, nav.children[3]||null);
+  }
+  link.style.display='flex';
+  link.style.visibility='visible';
+  link.style.opacity='1';
+})();
+</script></body></html>

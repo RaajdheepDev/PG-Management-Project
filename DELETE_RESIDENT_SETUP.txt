@@ -1,0 +1,22 @@
+PERMANENT RESIDENT DELETION
+
+The Admin > Residents page now shows "Delete Forever" for INACTIVE residents.
+For safety, an active resident must first be marked as Left.
+
+The button calls the Supabase Edge Function:
+  delete-resident
+
+Deploy:
+  supabase/functions/delete-resident/index.ts
+
+The Edge Function uses the service-role key only on the server and deletes:
+- the resident's bed assignment
+- payment records
+- complaints
+- profile
+- Supabase Auth account
+
+The browser never receives the service-role key.
+
+Payment reset:
+  Run paywork/delete_all_payment_data.sql ONLY when you intentionally want to erase every payment record and start again.

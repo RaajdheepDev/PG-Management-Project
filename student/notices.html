@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Notices | My Home Boys PG</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f7fb;color:#172033}
+button,input,select,textarea{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}
+.app{display:flex;min-height:100vh}.sidebar{width:250px;background:#111827;color:#fff;padding:22px 16px;position:fixed;left:0;top:0;bottom:0;z-index:10}
+.brand{font-size:20px;font-weight:800;padding:10px 12px 26px}.brand span{color:#60a5fa}
+.nav{display:grid;gap:7px}.nav a{padding:12px 13px;border-radius:10px;color:#cbd5e1;font-size:14px;display:flex;gap:11px;align-items:center}.nav a:hover,.nav a.active{background:#1f2937;color:#fff}
+.main{margin-left:250px;flex:1;padding:28px;max-width:1500px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:26px}
+.title h1{margin:0;font-size:28px}.title p{margin:6px 0 0;color:#64748b}.user{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:9px 13px;font-weight:700}
+.card{background:#fff;border:1px solid #e7ebf0;border-radius:15px;padding:19px;box-shadow:0 3px 15px rgba(15,23,42,.04)}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.section-head h2{font-size:18px;margin:0}
+.notice{border:1px solid #e7ebf0;border-radius:12px;padding:17px;margin-bottom:12px;background:#fff}
+.notice:last-child{margin-bottom:0}.notice-title{font-size:16px;font-weight:800;margin:0 0 7px}.notice-message{font-size:14px;line-height:1.55;color:#475569;white-space:pre-wrap}.notice-meta{margin-top:11px;font-size:12px;color:#94a3b8}
+.alert{padding:12px 14px;border-radius:10px;margin-bottom:16px;font-size:13px}.alert.error{background:#fee2e2;color:#991b1b}
+.muted{color:#64748b;font-size:13px}.btn{border:0;border-radius:9px;padding:10px 14px;background:#2563eb;color:#fff;font-weight:700}.btn.secondary{background:#eef2ff;color:#3730a3}
+.mobile-toggle{display:none}
+@media(max-width:700px){.sidebar{width:0;padding:0;overflow:hidden}.main{margin-left:0;padding:18px}.topbar{align-items:flex-start}.mobile-toggle{display:block;position:fixed;left:12px;top:12px;z-index:20;border:0;background:#111827;color:#fff;border-radius:8px;padding:9px}.sidebar.open{width:250px;padding:22px 16px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="brand">MY HOME <span>BOYS PG</span></div>
+<nav class="nav">
+<a href="index.html">⌂ Dashboard</a>
+<a href="profile.html">👤 My Profile</a>
+<a href="room.html">🛏 My Room</a>
+
+<a href="complaints.html">⚙ Complaints</a>
+<a class="active" href="notices.html">🔔 Notices</a>
+<a href="rules.html">📋 PG Rules</a>
+</nav>
+<div style="position:absolute;bottom:22px;left:16px;right:16px"><a href="../MyHomeBoysPG_with_dashboards.html">← Public Website</a></div>
+</aside>
+<button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+
+<main class="main">
+<div class="topbar">
+<div class="title"><h1>Notices</h1><p>Important announcements from PG management.</p></div>
+<div style="display:flex;align-items:center;gap:8px"><div class="user" id="studentName" >Resident</div><button class="btn secondary" onclick="logout()">Logout</button></div>
+</div>
+
+<div id="message"></div>
+
+<div class="card">
+<div class="section-head"><h2>Latest Notices</h2></div>
+<div id="noticesList"><div class="muted">Loading...</div></div>
+</div>
+</main>
+</div>
+
+<script>
+document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',()=>document.getElementById('sidebar').classList.remove('open')));
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://lfbzmllqmqcnerqkqroa.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_-hgZczEPq-EZ53N4cbXSXA_Y__0s8Wu";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+
+function escapeHtml(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+function formatDate(v){
+  if(!v)return"";
+  const d=new Date(v);
+  return Number.isNaN(d.getTime())?"":d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
+}
+function showMessage(text){
+  document.getElementById("message").innerHTML=text?`<div class="alert error">${escapeHtml(text)}</div>`:"";
+}
+
+async function loadStudent(){
+  const {data:{session}}=await supabaseClient.auth.getSession();
+  if(!session){location.replace("login.html");return null;}
+
+  const {data:profile,error}=await supabaseClient
+    .from("profiles").select("full_name,role").eq("id",session.user.id).single();
+
+  if(error||!profile||profile.role!=="resident"){
+    await supabaseClient.auth.signOut();
+    location.replace("login.html");
+    return null;
+  }
+  document.getElementById("studentName").textContent=profile.full_name||session.user.email;
+  return session;
+}
+
+async function loadNotices(){
+  const {data,error}=await supabaseClient
+    .from("notices")
+    .select("id,title,message,audience,student_id,created_at")
+    .in("audience",["all","students","specific_student"])
+    .order("created_at",{ascending:false});
+
+  if(error)throw error;
+
+  const list=document.getElementById("noticesList");
+  if(!data || !data.length){
+    list.innerHTML='<div class="muted">No notices available right now.</div>';
+    return;
+  }
+
+  list.innerHTML=data.map(n=>`
+    <article class="notice">
+      <h3 class="notice-title">${escapeHtml(n.title||"Untitled notice")}</h3>
+      <div class="notice-message">${escapeHtml(n.message||"")}</div>
+      <div class="notice-meta">${formatDate(n.created_at)}</div>
+    </article>
+  `).join("");
+}
+
+async function logout(){
+  await supabaseClient.auth.signOut();
+  location.replace("login.html");
+}
+
+(async()=>{
+  const session=await loadStudent();
+  if(!session)return;
+  try{await loadNotices();}
+  catch(error){
+    console.error(error);
+    showMessage("Could not load notices: "+(error.message||"Unknown error"));
+    document.getElementById("noticesList").innerHTML='<div class="muted">Could not load notices.</div>';
+  }
+})();
+</script>
+</body>
+</html>

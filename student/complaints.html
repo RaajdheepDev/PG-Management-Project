@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Complaints | My Home Boys PG</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f7fb;color:#172033}
+button,input,select,textarea{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}
+.app{display:flex;min-height:100vh}
+.sidebar{width:250px;background:#111827;color:#fff;padding:22px 16px;position:fixed;left:0;top:0;bottom:0;z-index:10}
+.brand{font-size:20px;font-weight:800;padding:10px 12px 26px}.brand span{color:#60a5fa}
+.nav{display:grid;gap:7px}.nav a{padding:12px 13px;border-radius:10px;color:#cbd5e1;font-size:14px;display:flex;gap:11px;align-items:center}.nav a:hover,.nav a.active{background:#1f2937;color:#fff}
+.main{margin-left:250px;flex:1;padding:28px;max-width:1500px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:26px}
+.title h1{margin:0;font-size:28px}.title p{margin:6px 0 0;color:#64748b}
+.user{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:9px 13px;font-weight:700}
+.card{background:#fff;border:1px solid #e7ebf0;border-radius:15px;padding:19px;box-shadow:0 3px 15px rgba(15,23,42,.04)}
+.section{margin-top:20px}.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.section-head h2{font-size:18px;margin:0}
+.btn{border:0;border-radius:9px;padding:10px 14px;background:#2563eb;color:#fff;font-weight:700}.btn.secondary{background:#eef2ff;color:#3730a3}.btn:disabled{opacity:.55;cursor:not-allowed}
+.muted{color:#64748b;font-size:13px}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}.field{display:grid;gap:6px}.field label{font-size:12px;font-weight:700;color:#475569}.field input,.field select,.field textarea{border:1px solid #dbe2ea;border-radius:9px;padding:10px 11px;background:#fff;outline:none}.field textarea{min-height:110px;resize:vertical}.full{grid-column:1/-1}
+.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:720px}.table th,.table td{padding:13px 12px;border-bottom:1px solid #eef2f6;text-align:left;font-size:13px}.table th{color:#64748b;font-weight:700}
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800}.resolved{background:#dcfce7;color:#166534}.pending{background:#fef3c7;color:#92400e}.overdue{background:#fee2e2;color:#991b1b}.info{background:#dbeafe;color:#1d4ed8}
+.alert{padding:12px 14px;border-radius:10px;margin-bottom:16px;font-size:13px}.alert.error{background:#fee2e2;color:#991b1b}.alert.success{background:#dcfce7;color:#166534}
+.mobile-toggle{display:none}
+@media(max-width:700px){.sidebar{width:0;padding:0;overflow:hidden}.main{margin-left:0;padding:18px}.form-grid{grid-template-columns:1fr}.topbar{align-items:flex-start}.mobile-toggle{display:block;position:fixed;left:12px;top:12px;z-index:20;border:0;background:#111827;color:#fff;border-radius:8px;padding:9px}.sidebar.open{width:250px;padding:22px 16px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="brand">MY HOME <span>BOYS PG</span></div>
+<nav class="nav">
+<a href="index.html">⌂ Dashboard</a>
+<a href="profile.html">👤 My Profile</a>
+<a href="room.html">🛏 My Room</a>
+
+<a class="active" href="complaints.html">⚙ Complaints</a>
+<a href="notices.html">🔔 Notices</a>
+<a href="rules.html">📋 PG Rules</a>
+</nav>
+<div style="position:absolute;bottom:22px;left:16px;right:16px"><a href="../MyHomeBoysPG_with_dashboards.html">← Public Website</a></div>
+</aside>
+<button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+
+<main class="main">
+<div class="topbar">
+<div class="title"><h1>Complaints</h1><p>Submit an issue and track its status.</p></div>
+<div style="display:flex;align-items:center;gap:8px">
+<div class="user" id="studentName">Resident</div>
+<button class="btn secondary" onclick="logout()">Logout</button>
+</div>
+</div>
+
+<div id="message"></div>
+
+<div class="card">
+<div class="section-head"><h2>Submit Complaint</h2></div>
+<form id="complaintForm">
+<div class="form-grid">
+<div class="field">
+<label for="category">Category</label>
+<select id="category" required>
+<option value="Maintenance">Maintenance</option>
+<option value="Cleanliness">Cleanliness</option>
+<option value="Electricity">Electricity</option>
+<option value="Water">Water</option>
+<option value="Other">Other</option>
+</select>
+</div>
+<div class="field">
+<label for="room">Room</label>
+<input id="room" value="Loading..." readonly>
+</div>
+<div class="field full">
+<label for="description">Description</label>
+<textarea id="description" placeholder="Describe the issue..." required></textarea>
+</div>
+</div>
+<button class="btn" id="submitButton" type="submit" style="margin-top:14px">Submit Complaint</button>
+</form>
+</div>
+
+<div class="section card">
+<div class="section-head"><h2>My Complaints</h2></div>
+<div class="table-wrap">
+<table class="table">
+<thead><tr><th>Issue</th><th>Description</th><th>Created</th><th>Status</th><th>Admin Response</th></tr></thead>
+<tbody id="complaintsList"><tr><td colspan="5" class="muted">Loading...</td></tr></tbody>
+</table>
+</div>
+</div>
+</main>
+</div>
+
+<script>
+document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',()=>document.getElementById('sidebar').classList.remove('open')));
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://lfbzmllqmqcnerqkqroa.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_-hgZczEPq-EZ53N4cbXSXA_Y__0s8Wu";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+
+let currentSession=null;
+
+function escapeHtml(value){
+  return String(value ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+}
+function formatDate(value){
+  if(!value) return "—";
+  const d=new Date(value);
+  return Number.isNaN(d.getTime())?"—":d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
+}
+function statusClass(status){
+  const s=String(status||"").toLowerCase();
+  if(s==="resolved"||s==="closed") return "resolved";
+  if(s==="pending"||s==="in progress"||s==="open") return "pending";
+  return "info";
+}
+function showMessage(text,type){
+  const box=document.getElementById("message");
+  box.innerHTML=text?`<div class="alert ${type==="success"?"success":"error"}">${escapeHtml(text)}</div>`:"";
+}
+
+async function loadComplaints(){
+  const {data,error}=await supabaseClient
+    .from("complaints")
+    .select("id,category,description,status,admin_response,created_at,resolved_at")
+    .eq("student_id",currentSession.user.id)
+    .order("created_at",{ascending:false});
+
+  if(error) throw error;
+
+  // Show all active complaints, but only the 5 most recently resolved.
+  const active=(data||[]).filter(c=>{
+    const s=String(c.status||"").toLowerCase();
+    return s!=="resolved" && s!=="closed";
+  });
+  const resolved=(data||[])
+    .filter(c=>{const s=String(c.status||"").toLowerCase(); return s==="resolved" || s==="closed";})
+    .sort((a,b)=>new Date(b.resolved_at||b.created_at)-new Date(a.resolved_at||a.created_at))
+    .slice(0,5);
+  const visible=[...active,...resolved];
+
+  const list=document.getElementById("complaintsList");
+  if(!visible.length){
+    list.innerHTML='<tr><td colspan="5" class="muted">No complaints submitted yet.</td></tr>';
+    return;
+  }
+
+  list.innerHTML=visible.map(c=>`
+    <tr>
+      <td>${escapeHtml(c.category||"—")}</td>
+      <td>${escapeHtml(c.description||"—")}</td>
+      <td>${formatDate(c.created_at)}</td>
+      <td><span class="badge ${statusClass(c.status)}">${escapeHtml(String(c.status||"Unknown").replace(/_/g," ").toUpperCase())}</span></td>
+      <td>${escapeHtml(c.admin_response||"—")}</td>
+    </tr>
+  `).join("");
+}
+
+async function loadStudent(){
+  const {data:profile,error}=await supabaseClient
+    .from("profiles")
+    .select("full_name,role,room_id")
+    .eq("id",currentSession.user.id)
+    .single();
+
+  if(error || !profile || profile.role!=="resident"){
+    await supabaseClient.auth.signOut();
+    location.replace("login.html");
+    return;
+  }
+
+  document.getElementById("studentName").textContent=profile.full_name||currentSession.user.email;
+
+  if(profile.room_id){
+    const {data:room}=await supabaseClient
+      .from("rooms")
+      .select("room_number")
+      .eq("id",profile.room_id)
+      .maybeSingle();
+    document.getElementById("room").value=room?.room_number ? String(room.room_number) : "Assigned";
+  }else{
+    document.getElementById("room").value="Not assigned";
+  }
+}
+
+document.getElementById("complaintForm").addEventListener("submit",async(e)=>{
+  e.preventDefault();
+  const button=document.getElementById("submitButton");
+  const category=document.getElementById("category").value;
+  const description=document.getElementById("description").value.trim();
+
+  if(!description){
+    showMessage("Please describe the issue before submitting.","error");
+    return;
+  }
+
+  button.disabled=true;
+  button.textContent="Submitting...";
+
+  const {error}=await supabaseClient.from("complaints").insert({
+    student_id:currentSession.user.id,
+    category,
+    description
+  });
+
+  if(error){
+    console.error(error);
+    showMessage("Could not submit your complaint: "+(error.message||"Unknown error"),"error");
+  }else{
+    document.getElementById("description").value="";
+    showMessage("Complaint submitted successfully.","success");
+    await loadComplaints();
+  }
+
+  button.disabled=false;
+  button.textContent="Submit Complaint";
+});
+
+async function logout(){
+  await supabaseClient.auth.signOut();
+  location.replace("login.html");
+}
+
+(async()=>{
+  const {data:{session}}=await supabaseClient.auth.getSession();
+  if(!session){location.replace("login.html");return;}
+  currentSession=session;
+  try{
+    await loadStudent();
+    await loadComplaints();
+  }catch(error){
+    console.error(error);
+    showMessage("Could not load your complaints: "+(error.message||"Unknown error"),"error");
+    document.getElementById("complaintsList").innerHTML='<tr><td colspan="5" class="muted">Could not load complaints.</td></tr>';
+  }
+})();
+</script>
+</body>
+</html>
