@@ -197,7 +197,7 @@ async function logout(){await supabaseClient.auth.signOut();location.replace("lo
 (function(){
   const nav=document.querySelector('.nav');
   if(!nav)return;
-  let link=nav.querySelector('a[href*="payments.html"]');
+  let link=nav.querySelector('a[href*="payments"]');
   if(!link){
     link=document.createElement('a');
     link.href='payments.html?v=20260914';
