@@ -33,7 +33,7 @@ a{text-decoration:none;color:inherit}
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand">MY HOME <span>BOYS PG</span></div><nav class="nav"><a class="" href="index.html?v=20260914">⌂ Dashboard</a><a class="" href="students.html?v=20260914">👥 Residents</a><a class="" href="rooms.html?v=20260914">🛏 Rooms</a><a class="" href="payments.html?v=20260914">💰 Payments</a><a class="" href="complaints.html?v=20260914">⚙ Complaints</a><a class="" href="notices.html?v=20260914">🔔 Notices</a><a class="" href="rules.html?v=20260914">📋 PG Rules</a><a class="active" href="settings.html?v=20260914">⚙ Settings</a></nav>
-<div style="position:absolute;bottom:22px;left:16px;right:16px"><a href="../MyHomeBoysPG_with_dashboards.html">← Public Website</a></div></aside>
+<div style="position:absolute;bottom:22px;left:16px;right:16px"><a href="/">Public Website</a></div></aside>
 <button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
 <main class="main"><div class="topbar"><div class="title"><h1>Settings</h1><p>My Home Boys PG management portal</p></div><div><span class="user">Admin</span><button class="btn secondary" style="margin-left:8px" onclick="logout()">Logout</button></div></div>
 <div class="card"><h2>PG Settings</h2><div id="msg" style="display:none;margin:12px 0;padding:10px 12px;border-radius:9px;font-size:13px;font-weight:700"></div><div class="form-grid">
@@ -122,18 +122,4 @@ async function saveSettings(){
 
 async function logout(){await supabaseClient.auth.signOut();location.replace('login.html');}
 </script><script>
-(function(){
-  const nav=document.querySelector('.nav');
-  if(!nav)return;
-  let link=nav.querySelector('a[href*="payments.html"]');
-  if(!link){
-    link=document.createElement('a');
-    link.href='payments.html?v=20260914';
-    link.innerHTML='💰 Payments';
-    nav.insertBefore(link, nav.children[3]||null);
-  }
-  link.style.display='flex';
-  link.style.visibility='visible';
-  link.style.opacity='1';
-})();
 </script></body></html>
