@@ -1,0 +1,165 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Resident Login | My Home Boys PG</title><style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f5f7fb;font-family:Inter,system-ui,sans-serif;color:#172033}.box{width:min(420px,calc(100% - 32px));background:#fff;padding:30px;border:1px solid #e5e7eb;border-radius:18px;box-shadow:0 12px 40px rgba(15,23,42,.08)}.brand{font-weight:900;font-size:20px;margin-bottom:8px}.brand span{color:#2563eb}h1{margin:0 0 8px}p{color:#64748b}label{display:block;margin:15px 0 7px;font-size:13px;font-weight:700}input{width:100%;padding:12px;border:1px solid #dbe2ea;border-radius:9px}button{width:100%;padding:12px;margin-top:20px;border:0;border-radius:9px;background:#2563eb;color:#fff;font-weight:800}button:disabled{opacity:.6}#msg{display:none;margin-top:14px;padding:10px;border-radius:9px;font-size:13px}.err{display:block!important;background:#fee2e2;color:#991b1b}.ok{display:block!important;background:#dcfce7;color:#166534}.links{text-align:center;font-size:13px;margin-top:18px}a{color:#2563eb;text-decoration:none}
+/* ===== Responsive layout: desktop + tablet + mobile ===== */
+html{width:100%;overflow-x:hidden}
+body{width:100%;min-width:0;overflow-x:hidden}
+img,video,iframe{max-width:100%;height:auto}
+button,input,select,textarea{max-width:100%}
+.app{width:100%;min-width:0}
+.main{min-width:0;width:100%;max-width:none}
+.table-wrap{width:100%;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.table{max-width:100%}
+.card{min-width:0;max-width:100%}
+.form-grid{min-width:0}
+
+/* Tablet */
+@media (max-width:1000px){
+  .sidebar{width:250px}
+  .main{margin-left:250px;padding:22px}
+  .topbar{flex-wrap:wrap}
+  .topbar .user{margin-left:auto}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* Tablet portrait + mobile: sidebar becomes an overlay */
+@media (max-width:900px){
+  .sidebar{width:0;padding:0;overflow:hidden;box-shadow:none;transition:width .2s ease,box-shadow .2s ease}
+  .sidebar.open{width:250px;padding:22px 16px;box-shadow:8px 0 30px rgba(0,0,0,.22)}
+  .main{margin-left:0!important;padding:20px;min-width:0}
+  .mobile-toggle{display:block!important;position:fixed;left:12px;top:12px;z-index:1001;border:0;background:#111827;color:#fff;border-radius:9px;padding:9px 11px;line-height:1;font-size:20px;box-shadow:0 3px 12px rgba(0,0,0,.18)}
+  .topbar{padding-left:48px}
+}
+
+/* Small phones */
+@media (max-width:600px){
+  .main{padding:14px}
+  .topbar{display:flex;flex-direction:column;align-items:stretch;gap:12px;margin-bottom:18px}
+  .topbar .user{margin-left:0;width:100%;text-align:left}
+  .topbar .btn{width:100%;margin-left:0!important}
+  .title h1{font-size:22px;line-height:1.2}
+  .title p{font-size:13px;line-height:1.4}
+  .grid,.form-grid{grid-template-columns:1fr!important;gap:12px}
+  .card{padding:15px;border-radius:13px}
+  .stat{font-size:25px}
+  .section{margin-top:14px}
+  .section-head{gap:10px;align-items:flex-start;flex-wrap:wrap}
+  .section-head .btn,.section-head button{width:100%}
+  .btn{min-height:42px;padding:10px 13px}
+  .field input,.field select,.field textarea{width:100%;font-size:16px}
+  .notice{padding:12px}
+  .table{min-width:620px}
+  .sidebar.open{width:min(250px,86vw)}
+  .nav a{min-height:44px}
+}
+
+/* Very small phones */
+@media (max-width:380px){
+  .main{padding:10px}
+  .card{padding:13px}
+  .title h1{font-size:20px}
+  .mobile-toggle{left:9px;top:9px}
+  .topbar{padding-left:43px}
+}
+
+/* Prevent common fixed-width/modal layouts from overflowing */
+.modal,.dialog,.popup,.modal-content,.dialog-content,.form-card,.panel{max-width:calc(100vw - 24px)}
+@media (max-width:600px){
+  .modal,.dialog,.popup{margin:10px auto!important}
+  .modal-content,.dialog-content,.form-card,.panel{width:100%!important;max-width:100%!important}
+}
+
+/* ===== FINAL RESPONSIVE LAYER ===== */
+html, body { max-width:100%; overflow-x:hidden; }
+*, *::before, *::after { box-sizing:border-box; }
+img, video, iframe { max-width:100%; height:auto; }
+button, a, input, select, textarea { max-width:100%; }
+
+@media (max-width:1023px){
+  .sidebar{width:0 !important; padding:0 !important; overflow:hidden !important; box-shadow:none !important; transition:width .22s ease, box-shadow .22s ease;}
+  .sidebar.open{width:min(250px,86vw) !important; padding:22px 16px !important; box-shadow:8px 0 30px rgba(0,0,0,.22) !important;}
+  .main{margin-left:0 !important; min-width:0 !important; width:100%; max-width:100%;}
+  .mobile-toggle{display:flex !important; align-items:center; justify-content:center; position:fixed !important; left:12px; top:12px; z-index:10001; width:44px; height:44px; border:0; background:#111827; color:#fff; border-radius:10px; padding:0; line-height:1; font-size:21px; box-shadow:0 3px 12px rgba(0,0,0,.18); cursor:pointer;}
+  .topbar{padding-left:54px;}
+  .nav a{min-height:44px;}
+  .table-wrap{width:100%; max-width:100%; overflow-x:auto !important; -webkit-overflow-scrolling:touch;}
+  .table{min-width:680px;}
+  .actions, .modal-actions, .notice-actions, .date-filter { flex-wrap:wrap; }
+  .actions button, .actions .btn, .modal-actions button, .modal-actions .btn { flex:0 0 auto; }
+  .card, .section, .panel, .form-card { min-width:0; max-width:100%; }
+  .modal{padding:12px !important; overflow-y:auto !important;}
+  .modal-card{width:min(760px,100%) !important; max-width:100% !important;}
+}
+
+@media (max-width:767px){
+  .main{padding:14px !important;}
+  .topbar{display:flex; flex-direction:column; align-items:stretch; gap:12px; margin-bottom:18px; padding-left:54px;}
+  .topbar > div:last-child{width:100%; display:flex !important; flex-wrap:wrap; gap:8px !important;}
+  .topbar .user{margin-left:0 !important; flex:1 1 100%; width:100%;}
+  .topbar .btn{flex:1 1 100%; width:100% !important; margin-left:0 !important;}
+  .title h1{font-size:22px; line-height:1.2;}
+  .title p{font-size:13px; line-height:1.45;}
+  .grid, .form-grid{grid-template-columns:1fr !important; gap:12px;}
+  .card{padding:15px; border-radius:13px;}
+  .section-head{gap:10px; align-items:flex-start; flex-wrap:wrap;}
+  .section-head > div{width:100%; display:flex !important; flex-wrap:wrap; gap:8px !important;}
+  .section-head .btn, .section-head button{flex:1 1 100%; width:100%; min-height:44px;}
+  .btn{min-height:44px; padding:10px 13px; white-space:normal;}
+  .field input, .field select, .field textarea{width:100%; max-width:100%; font-size:16px;}
+  .table-wrap{margin-right:0;}
+  .table{min-width:680px;}
+  .actions{display:flex !important; flex-wrap:wrap !important; gap:7px !important; min-width:190px;}
+  .actions .btn, .actions button{display:inline-flex !important; visibility:visible !important; opacity:1 !important; min-height:40px; white-space:nowrap;}
+  .modal-card{padding:15px !important;}
+  .modal-actions{display:flex !important; flex-direction:column-reverse; gap:8px !important;}
+  .modal-actions .btn, .modal-actions button{width:100% !important; min-height:44px;}
+  .date-filter{display:flex; flex-direction:column; align-items:stretch !important;}
+  .date-filter label, .date-filter input, .date-filter button, .date-result{width:100%; margin-left:0 !important; text-align:left;}
+  .notice-actions{display:flex; flex-direction:column; gap:8px;}
+  .notice-actions .btn, .notice-actions button{width:100%; min-height:44px;}
+  .popup, .dialog, .modal, .modal-content, .dialog-content, .form-card, .panel{max-width:calc(100vw - 20px) !important;}
+}
+
+@media (max-width:380px){
+  .main{padding:10px !important;}
+  .mobile-toggle{left:9px; top:9px; width:42px; height:42px;}
+  .topbar{padding-left:51px;}
+  .table{min-width:640px;}
+  .card{padding:13px;}
+}
+
+</style></head>
+<body><div class="box"><div class="brand">MY HOME <span>BOYS PG</span></div><h1>Resident Login</h1><p>Secure portal login</p>
+<form id="f"><label>Email</label><input id="e" type="email" required><label>Password</label><input id="p" type="password" required><button id="b">Login</button></form><div id="msg"></div>
+<div class="links"><a href="../admin/login.html">Admin Login</a> · <a href="../index.html">Public Website</a></div></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://lfbzmllqmqcnerqkqroa.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_-hgZczEPq-EZ53N4cbXSXA_Y__0s8Wu";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+</script>
+<script>
+const f=document.getElementById("f"),b=document.getElementById("b"),m=document.getElementById("msg");
+f.addEventListener("submit",async ev=>{ev.preventDefault();b.disabled=true;b.textContent="Signing in...";m.className="";m.style.display="none";
+const {data,error}=await supabaseClient.auth.signInWithPassword({email:document.getElementById("e").value.trim(),password:document.getElementById("p").value});
+if(error){m.textContent=error.message;m.className="err";b.disabled=false;b.textContent="Login";return;}
+const {data:pr,error:pe}=await supabaseClient.from("profiles").select("role").eq("id",data.user.id).single();
+if(pe||!pr||pr.role!=="resident"){await supabaseClient.auth.signOut();m.textContent="This account is not authorized for the resident portal.";m.className="err";b.disabled=false;b.textContent="Login";return;}
+m.textContent="Login successful. Redirecting...";m.className="ok";location.href="../student/index.html";});
+</script><script>
+(function(){
+  const sidebar=document.getElementById('sidebar');
+  const toggle=document.querySelector('.mobile-toggle');
+  if(!sidebar||!toggle)return;
+  toggle.setAttribute('aria-label','Open navigation');
+  toggle.setAttribute('aria-expanded','false');
+  function closeNav(){sidebar.classList.remove('open');toggle.setAttribute('aria-expanded','false');}
+  function openNav(){sidebar.classList.add('open');toggle.setAttribute('aria-expanded','true');}
+  toggle.addEventListener('click',function(){sidebar.classList.contains('open')?closeNav():openNav();});
+  sidebar.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeNav));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeNav();});
+  document.addEventListener('click',e=>{
+    if(window.innerWidth<=900 && sidebar.classList.contains('open') && !sidebar.contains(e.target) && !toggle.contains(e.target)) closeNav();
+  });
+  window.addEventListener('resize',()=>{if(window.innerWidth>900)closeNav();});
+})();
+</script></body></html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Enquiries | My Home Boys PG</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f7fb;color:#172033}button,input,select,textarea{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}.app{display:flex;min-height:100vh}.sidebar{width:250px;background:#111827;color:#fff;padding:22px 16px;position:fixed;left:0;top:0;bottom:0;z-index:100}.brand{font-size:20px;font-weight:800;padding:10px 12px 26px}.brand span{color:#60a5fa}.nav{display:grid;gap:7px}.nav a{padding:12px 13px;border-radius:10px;color:#cbd5e1;font-size:14px;display:flex;gap:11px;align-items:center}.nav a:hover,.nav a.active{background:#1f2937;color:#fff}.main{margin-left:250px;flex:1;padding:28px;min-width:0}.topbar{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:26px}.title h1{margin:0;font-size:28px}.title p{margin:6px 0 0;color:#64748b}.user{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:9px 13px;font-weight:700}.card{background:#fff;border:1px solid #e7ebf0;border-radius:15px;padding:19px;box-shadow:0 3px 15px rgba(15,23,42,.04)}.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:900px}.table th,.table td{padding:13px 12px;border-bottom:1px solid #eef2f6;text-align:left;font-size:13px;vertical-align:top}.table th{color:#64748b;font-weight:700}.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800}.new{background:#dbeafe;color:#1d4ed8}.contacted{background:#fef3c7;color:#92400e}.closed{background:#dcfce7;color:#166534}.btn{border:0;border-radius:9px;padding:9px 12px;background:#2563eb;color:#fff;font-weight:700}.btn.secondary{background:#eef2ff;color:#3730a3}.btn.danger{background:#fee2e2;color:#991b1b}.status-select{border:1px solid #dbe2ea;border-radius:8px;padding:8px;background:#fff}.alert{padding:12px 14px;border-radius:10px;margin-bottom:16px;font-size:13px}.alert.error{background:#fee2e2;color:#991b1b}.alert.success{background:#dcfce7;color:#166534}.mobile-toggle{display:none}
+@media(max-width:900px){.sidebar{width:0;padding:0;overflow:hidden;transition:width .2s ease,box-shadow .2s ease;box-shadow:none}.sidebar.open{width:250px;padding:22px 16px;box-shadow:8px 0 30px rgba(0,0,0,.22)}.main{margin-left:0;padding:20px}.mobile-toggle{display:block;position:fixed;left:12px;top:12px;z-index:1001;border:0;background:#111827;color:#fff;border-radius:9px;padding:9px 11px;font-size:20px;line-height:1}.topbar{padding-left:48px}}
+@media(max-width:600px){.main{padding:14px}.topbar{display:flex;flex-direction:column;align-items:stretch;gap:12px}.title h1{font-size:22px}.user{width:100%}.card{padding:14px}.table{min-width:900px}.sidebar.open{width:min(250px,86vw)}.nav a{min-height:44px}}
+html,body{overflow-x:hidden}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar"><div class="brand">MY HOME <span>BOYS PG</span></div><nav class="nav">
+<a href="index.html">⌂ Dashboard</a><a href="students.html">👥 Residents</a><a href="rooms.html">🛏 Rooms</a><a href="payments.html">💰 Payments</a><a href="complaints.html">⚙ Complaints</a><a class="active" href="enquiries.html">✉ Enquiries</a><a href="notices.html">🔔 Notices</a><a href="rules.html">📋 PG Rules</a><a href="settings.html">⚙ Settings</a>
+</nav></aside>
+<main class="main">
+<button class="mobile-toggle" id="mobileMenuToggle" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
+<div class="topbar"><div class="title"><h1>PG Enquiries</h1><p>Queries submitted through the public website.</p></div><div class="user" id="userName">Admin</div></div>
+<div id="alert"></div>
+<div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>Name</th><th>Phone</th><th>Room Preference</th><th>Message</th><th>Submitted</th><th>Status</th></tr></thead><tbody id="rows"><tr><td colspan="6">Loading enquiries...</td></tr></tbody></table></div></div>
+</main></div>
+<script>
+const SUPABASE_URL="https://lfbzmllqmqcnerqkqroa.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_-hgZczEPq-EZ53N4cbXSXA_Y__0s8Wu";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function statusClass(s){return s==='closed'?'closed':s==='contacted'?'contacted':'new'}
+async function init(){
+ const {data:{user}}=await supabaseClient.auth.getUser();
+ if(!user){location.href='login.html';return;}
+ const {data:profile,error:pe}=await supabaseClient.from('profiles').select('full_name,role').eq('id',user.id).maybeSingle();
+ if(pe||!profile||profile.role!=='admin'){await supabaseClient.auth.signOut();location.href='login.html';return;}
+ document.getElementById('userName').textContent=profile.full_name||'PG Admin';
+ load();
+}
+async function load(){
+ const rows=document.getElementById('rows');
+ const {data,error}=await supabaseClient.from('enquiries').select('id,full_name,phone,room_preference,message,status,created_at').order('created_at',{ascending:false});
+ if(error){rows.innerHTML='<tr><td colspan="6">Unable to load enquiries. Run the enquiries SQL setup first.</td></tr>';console.error(error);return;}
+ if(!data.length){rows.innerHTML='<tr><td colspan="6">No enquiries submitted yet.</td></tr>';return;}
+ rows.innerHTML=data.map(e=>`<tr><td><strong>${esc(e.full_name)}</strong></td><td><a href="tel:${esc(e.phone)}">${esc(e.phone)}</a></td><td>${esc(e.room_preference||'—')}</td><td style="white-space:pre-wrap;max-width:360px">${esc(e.message)}</td><td>${new Date(e.created_at).toLocaleString('en-IN')}</td><td><select class="status-select" data-id="${e.id}"><option value="new" ${e.status==='new'?'selected':''}>New</option><option value="contacted" ${e.status==='contacted'?'selected':''}>Contacted</option><option value="closed" ${e.status==='closed'?'selected':''}>Closed</option></select></td></tr>`).join('');
+ document.querySelectorAll('.status-select').forEach(sel=>sel.addEventListener('change',async()=>{const {error}=await supabaseClient.from('enquiries').update({status:sel.value}).eq('id',sel.dataset.id);if(error){showAlert('Could not update status.','error');load();}else showAlert('Enquiry status updated.','success');}));
+}
+function showAlert(t,c){const a=document.getElementById('alert');a.className='alert '+c;a.textContent=t;setTimeout(()=>a.textContent='',2500)}
+const sidebar=document.getElementById('sidebar'),toggle=document.getElementById('mobileMenuToggle');
+function closeNav(){sidebar.classList.remove('open');toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','Open navigation');toggle.textContent='☰'}
+toggle.addEventListener('click',()=>{const open=!sidebar.classList.contains('open');sidebar.classList.toggle('open',open);toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');toggle.textContent=open?'×':'☰'});sidebar.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeNav));document.addEventListener('keydown',e=>{if(e.key==='Escape')closeNav()});
+init();
+</script>
+</body></html>
