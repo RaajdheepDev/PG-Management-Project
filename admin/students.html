@@ -713,7 +713,21 @@ button, a, input, select, textarea { max-width:100%; }
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
-const SUPABASE_URL="https://lfbzmllqmqcnerqkqroa.supabase.co";const SUPABASE_PUBLISHABLE_KEY="sb_publishable_-hgZczEPq-EZ53N4cbXSXA_Y__0s8Wu";const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+const SUPABASE_URL="https://lfbzmllqmqcnerqkqroa.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_-hgZczEPq-EZ53N4cbXSXA_Y__0s8Wu";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY,
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      storage: window.localStorage
+    }
+  }
+);
 function showPaymentHistory(residentId) {
     alert("Payment History clicked: " + residentId);
 }

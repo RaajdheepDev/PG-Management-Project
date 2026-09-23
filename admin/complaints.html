@@ -196,7 +196,18 @@ document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',()=>do
 <script>
 const SUPABASE_URL="https://lfbzmllqmqcnerqkqroa.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_-hgZczEPq-EZ53N4cbXSXA_Y__0s8Wu";
-const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY,
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      storage: window.localStorage
+    }
+  }
+);
 let complaints=[];
 let editingId=null;
 

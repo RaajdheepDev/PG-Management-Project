@@ -135,7 +135,18 @@ button, a, input, select, textarea { max-width:100%; }
 <script>
 const SUPABASE_URL="https://lfbzmllqmqcnerqkqroa.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_-hgZczEPq-EZ53N4cbXSXA_Y__0s8Wu";
-const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY,
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      storage: window.localStorage
+    }
+  }
+);
 </script>
 <script>
 const f=document.getElementById("f"),b=document.getElementById("b"),m=document.getElementById("msg");

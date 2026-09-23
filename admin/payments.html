@@ -368,7 +368,21 @@ Once the payment is verified, the admin will mark it as paid.</div><div id="mess
 <div class="grid"><div class="card"><div class="stat-label">Pending Dues</div><div class="stat" id="pendingCount">—</div></div><div class="card"><div class="stat-label">Pending Amount</div><div class="stat" id="pendingAmount">—</div></div><div class="card"><div class="stat-label">Paid This Month</div><div class="stat" id="paidAmount">—</div></div></div><div class="section card"><div class="date-filter"><label>From Date<input type="date" id="paidFromDate"></label><label>To Date<input type="date" id="paidToDate"></label><button class="btn secondary" id="checkDateBtn" onclick="checkPaidOnRange()">Check Date Range</button><div class="date-result"><div class="label" id="datePaidLabel">Paid for selected range</div><div class="value" id="datePaidAmount">—</div><div class="count" id="datePaidCount">Select a from and to date</div></div></div></div>
 <div class="section card"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px"><h2 style="margin:0">All Payments</h2><button class="btn secondary" id="generateBtn" onclick="generateDues()">Generate Current Dues</button></div><div class="muted" style="margin:-4px 0 12px">Rent is based on the resident's current room sharing type. Monthly due date follows the resident's check-in day.</div><div class="table-wrap"><table class="table"><thead><tr><th>Resident</th><th>Room</th><th>Sharing</th><th>Month</th><th>Amount</th><th>Due Date</th><th>Status</th><th>Method</th><th>Paid Date</th><th>Action</th></tr></thead><tbody id="paymentsBody"><tr><td colspan="10" class="muted">Loading...</td></tr></tbody></table></div></div></main></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
-const SUPABASE_URL="https://lfbzmllqmqcnerqkqroa.supabase.co";const SUPABASE_PUBLISHABLE_KEY="sb_publishable_-hgZczEPq-EZ53N4cbXSXA_Y__0s8Wu";const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+const SUPABASE_URL="https://lfbzmllqmqcnerqkqroa.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_-hgZczEPq-EZ53N4cbXSXA_Y__0s8Wu";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY,
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      storage: window.localStorage
+    }
+  }
+);
 const money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{maximumFractionDigits:0});const fmtDate=v=>{if(!v)return'—';const d=new Date(String(v).length===10?v+'T00:00:00':v);return isNaN(d)?'—':d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})};const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function message(text,ok=false){const e=document.getElementById('message');e.textContent=text;e.style.display='block';e.style.background=ok?'#dcfce7':'#fee2e2';e.style.color=ok?'#166534':'#991b1b'}
 async function loadPayments(){
